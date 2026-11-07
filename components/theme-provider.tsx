@@ -38,7 +38,14 @@ function ThemeHotkey() {
   const { resolvedTheme, setTheme } = useTheme()
 
   React.useEffect(() => {
-    function onKeyDown(event: KeyboardEvent) {
+    function onKeyDown(event: Event) {
+      // Anything can dispatch a synthetic "keydown" on window (browser
+      // extensions, dev tooling, UI libraries) — those carry no `key`, so
+      // narrow to a real KeyboardEvent before reading it.
+      if (!(event instanceof KeyboardEvent)) {
+        return
+      }
+
       if (event.defaultPrevented || event.repeat) {
         return
       }
@@ -47,7 +54,7 @@ function ThemeHotkey() {
         return
       }
 
-      if (event.key.toLowerCase() !== "d") {
+      if (typeof event.key !== "string" || event.key.toLowerCase() !== "d") {
         return
       }
 
