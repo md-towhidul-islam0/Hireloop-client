@@ -6,17 +6,20 @@ import { useRouter } from "next/navigation"
 import {
   AlertCircleIcon,
   ArrowRightIcon,
+  BriefcaseIcon,
   CheckIcon,
   EyeIcon,
   EyeOffIcon,
   LoaderCircleIcon,
   LockIcon,
   MailIcon,
+  ShieldCheckIcon,
   UserIcon,
 } from "lucide-react"
 
 import AuthLayout from "@/components/AuthLayout"
 import { authClient } from "@/lib/auth-client"
+import { ROLE_OPTIONS, type UserRole } from "@/lib/roles"
 
 const inputClass =
   "h-12 w-full rounded-xl border border-white/10 bg-white/[0.04] pl-11 pr-4 text-sm text-white placeholder:text-white/30 outline-none transition focus:border-indigo-500/60 focus:ring-4 focus:ring-indigo-500/15"
@@ -40,10 +43,17 @@ const getPasswordStrength = (password: string) => {
   return password.length >= 8 ? score : Math.min(score, 1)
 }
 
+const roleIcons: Record<UserRole, React.ReactNode> = {
+  seeker: <UserIcon className="size-4" />,
+  recruiter: <BriefcaseIcon className="size-4" />,
+  admin: <ShieldCheckIcon className="size-4" />,
+}
+
 const SignUpPage = () => {
   const router = useRouter()
   const [name, setName] = useState("")
   const [email, setEmail] = useState("")
+  const [role, setRole] = useState<UserRole | null>(null)
   const [password, setPassword] = useState("")
   const [confirm, setConfirm] = useState("")
   const [agreed, setAgreed] = useState(false)
@@ -56,6 +66,11 @@ const SignUpPage = () => {
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
     setError(null)
+
+    if (!role) {
+      setError("Please choose the role you're signing up with.")
+      return
+    }
 
     if (password !== confirm) {
       setError("Passwords don't match.")
@@ -74,6 +89,7 @@ const SignUpPage = () => {
         name,
         email,
         password,
+        role,
       })
 
       if (signUpError) {
@@ -148,6 +164,75 @@ const SignUpPage = () => {
                 className={inputClass}
               />
             </div>
+          </div>
+
+          <div>
+            <span
+              id="role-label"
+              className="mb-1.5 block text-sm font-medium text-white/70"
+            >
+              I am joining as
+            </span>
+            <div
+              role="radiogroup"
+              aria-labelledby="role-label"
+              className="space-y-2.5"
+            >
+              {ROLE_OPTIONS.map((option) => {
+                const selected = role === option.value
+
+                return (
+                  <button
+                    key={option.value}
+                    type="button"
+                    role="radio"
+                    aria-checked={selected}
+                    onClick={() => {
+                      setRole(option.value)
+                      setError(null)
+                    }}
+                    className={`flex w-full items-center gap-3 rounded-xl border px-3.5 py-3 text-left transition-all focus-visible:ring-4 focus-visible:outline-none ${
+                      selected
+                        ? "border-indigo-500/60 bg-indigo-500/10 ring-4 ring-indigo-500/15"
+                        : "border-white/10 bg-white/[0.04] hover:border-white/25 hover:bg-white/[0.07] focus-visible:border-indigo-500/50 focus-visible:ring-indigo-500/15"
+                    }`}
+                  >
+                    <span
+                      className={`grid size-9 shrink-0 place-items-center rounded-lg transition-colors ${
+                        selected
+                          ? "bg-indigo-500 text-white"
+                          : "bg-white/10 text-white/55"
+                      }`}
+                    >
+                      {roleIcons[option.value]}
+                    </span>
+
+                    <span className="min-w-0 flex-1">
+                      <span className="block text-sm font-medium text-white/90">
+                        {option.label}
+                      </span>
+                      <span className="mt-0.5 block truncate text-xs text-white/45">
+                        {option.description}
+                      </span>
+                    </span>
+
+                    <span
+                      className={`grid size-5 shrink-0 place-items-center rounded-full border transition-all ${
+                        selected
+                          ? "border-indigo-400 bg-indigo-500 text-white"
+                          : "border-white/25 text-transparent"
+                      }`}
+                    >
+                      <CheckIcon className="size-3" />
+                    </span>
+                  </button>
+                )
+              })}
+            </div>
+            <p className="mt-1.5 text-xs text-white/40">
+              This decides what you can do on HireLoop — you can&apos;t change it
+              later.
+            </p>
           </div>
 
           <div>

@@ -13,6 +13,7 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet"
 import logo from "@/components/ui/images/logo.png"
+import { authClient } from "@/lib/auth-client"
 
 const navLinks = [
   { label: "Browse Jobs", href: "/jobs" },
@@ -21,6 +22,10 @@ const navLinks = [
 ]
 
 const Navbar = () => {
+  const { data: session, isPending } = authClient.useSession()
+  const HandelSignOut = async () => {
+    await authClient.signOut();
+  }
   return (
     <header className="px-4 pt-4 sm:px-6 sm:pt-6 lg:px-8">
       <nav className="mx-auto flex w-full max-w-7xl items-center justify-between gap-6 rounded-2xl bg-card px-5 py-4 sm:px-8 sm:py-6">
@@ -48,25 +53,32 @@ const Navbar = () => {
               {link.label}
             </Link>
           ))}
+          {isPending ? "Loading...." : session ? <> <div className="flex gap-4 items-center "> <div>Weclome,{session?.user?.name}</div>   <Button
+            onClick={HandelSignOut}
 
-          <span aria-hidden="true" className="h-5 w-px bg-border" />
-          <Link href="/SignIn" >
-          <Button
-           
-            variant="ghost"
-            className="cursor-pointer h-auto bg-transparent px-0 text-sm font-medium text-indigo-500 hover:bg-transparent hover:text-indigo-400 dark:text-indigo-400 dark:hover:text-indigo-300"
-          >
-            Sign In
-          </Button>
-          </Link>
+            className=" cursor-pointer h-11 rounded-xl bg-red-500 px-3 text-sm font-medium text-white shadow-none hover:bg-red-800 sm:h-9">
+            SignOut
+          </Button></div></> : <>
 
-          <Link href={"/SignUp"}>
-          <Button
-           
-          className=" cursor-pointer h-11 rounded-xl bg-indigo-600 px-6 text-sm font-medium text-white shadow-none hover:bg-indigo-500 sm:h-12">
-            Get Started
-          </Button>
-          </Link>
+            <span aria-hidden="true" className="h-5 w-px bg-border" />
+            <Link href="/SignIn" >
+              <Button
+
+                variant="ghost"
+                className="cursor-pointer h-auto bg-transparent px-0 text-sm font-medium text-indigo-500 hover:bg-transparent hover:text-indigo-400 dark:text-indigo-400 dark:hover:text-indigo-300"
+              >
+                Sign In
+              </Button>
+            </Link>
+
+            <Link href={"/SignUp"}>
+              <Button
+
+                className=" cursor-pointer h-11 rounded-xl bg-indigo-600 px-6 text-sm font-medium text-white shadow-none hover:bg-indigo-500 sm:h-12">
+                Get Started
+              </Button>
+            </Link>
+          </>}
         </div>
 
         {/* Mobile navigation */}
