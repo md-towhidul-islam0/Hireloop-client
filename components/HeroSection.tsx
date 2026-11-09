@@ -114,7 +114,7 @@ const HeroSection = () => {
             </div>
 
             {/* Globe */}
-            <div className="relative z-0 mt-10 sm:mt-12">
+            <div className="relative z-0 mt-10 sm:-mt-20">
                 <div className="relative mx-auto aspect-[9/5] w-full max-w-[1440px] overflow-hidden sm:aspect-[16/7] lg:aspect-[12/5]">
                     <Image
                         src={globe}
@@ -126,7 +126,7 @@ const HeroSection = () => {
                         className="-mt-[45%] h-auto w-full max-w-none select-none"
                     />
 
-                    <div className="absolute inset-x-0 bottom-[15%] px-4">
+                    <div className="absolute inset-x-0 bottom-[35%] px-4 ">
                         <p className="text-center text-2xl leading-snug font-medium text-white/85 sm:text-3xl lg:text-4xl">
                             Assisting over{" "}
                             <span className="font-semibold text-white">15,000</span> job

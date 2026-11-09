@@ -23,6 +23,7 @@ const navLinks = [
 
 const Navbar = () => {
   const { data: session, isPending } = authClient.useSession()
+  console.log(session?.user?.role);
   const HandelSignOut = async () => {
     await authClient.signOut();
   }
