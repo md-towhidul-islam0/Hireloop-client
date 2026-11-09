@@ -15,15 +15,19 @@ import {
 import logo from "@/components/ui/images/logo.png"
 import { authClient } from "@/lib/auth-client"
 
-const navLinks = [
-  { label: "Browse Jobs", href: "/jobs" },
-  { label: "Company", href: "/company" },
-  { label: "Pricing", href: "/pricing" },
-]
+
+
+
 
 const Navbar = () => {
   const { data: session, isPending } = authClient.useSession()
   console.log(session?.user?.role);
+  const navLinks = [
+    { label: "Browse Jobs", href: "/jobs" },
+    { label: "Company", href: "/company" },
+    { label: "Pricing", href: "/pricing" },
+    { label: "Dashboard", href: `/dashbord/${session?.user?.role}` },
+  ]
   const HandelSignOut = async () => {
     await authClient.signOut();
   }

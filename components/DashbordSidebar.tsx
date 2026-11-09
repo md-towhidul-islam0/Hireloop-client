@@ -12,6 +12,7 @@ import {
   FileText,
   LayoutDashboard,
   LogOut,
+  PlusCircle,
   Settings,
   Users,
   Wallet,
@@ -62,6 +63,11 @@ const NAV_ITEMS: Record<UserRole, NavItem[]> = {
   ],
   recruiter: [
     { label: "Dashboard", href: "/dashbord/recruiter", icon: LayoutDashboard },
+    {
+      label: "Add Job",
+      href: "/dashbord/recruiter/add-jobs",
+      icon: PlusCircle,
+    },
     {
       label: "My Company",
       href: "/dashbord/recruiter/company",
