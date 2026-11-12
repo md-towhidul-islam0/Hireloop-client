@@ -1,5 +1,7 @@
 "use client"
 
+import { Button } from "@/components/ui/button"
+import { toast } from "@/components/ui/toast"
 import { useState, type FormEvent, type ReactNode } from "react"
 import Link from "next/link"
 import {
@@ -13,22 +15,23 @@ import {
   MapPin,
 } from "lucide-react"
 import { Addjob } from "@/lib/dataManu"
+import { useRouter } from "next/navigation"
 
-export interface JobfromType{
-    
-      title: string,
-      companyName: string,
-      category: string,
-      jobType: string,
-      isRemote: string,
-      location: string,
-      deadline: string,
-      minSalary:string,
-      maxSalary: string,
-      frequency: string,
-      responsibilities:string,
-      qualifications: string,
-    
+export interface JobfromType {
+
+  title: FormDataEntryValue | null,
+  companyName: FormDataEntryValue | null,
+  category: FormDataEntryValue | null,
+  jobType: FormDataEntryValue | null,
+  isRemote: boolean,
+  location: FormDataEntryValue | null,
+  deadline: FormDataEntryValue | null,
+  minSalary: FormDataEntryValue | null,
+  maxSalary: FormDataEntryValue | null,
+  frequency: FormDataEntryValue | null,
+  responsibilities: FormDataEntryValue | null,
+  qualifications: FormDataEntryValue | null,
+
 }
 
 
@@ -114,8 +117,9 @@ function SectionCard({
 
 export default function AddJobPage() {
   const [captured, setCaptured] = useState(false)
+     const router=useRouter();
 
-  const handleSubmit =async (event: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
 
     const formData = new FormData(event.currentTarget)
@@ -145,8 +149,26 @@ export default function AddJobPage() {
     //     }
     // })
     // console.log(res);
-    const da=await Addjob('jobs',job);
+
+    const da = await Addjob(job);
+ 
     console.log(da);
+    if (da.acknowledged === true) {
+      function showToast() {
+        const id = toast.add({
+          title: "Job Added Successfully",
+          description: "",
+          actionProps: {
+            children: "Manage Job",
+            onClick() {
+              router.push('/dashbord/recruiter/all-jobs')
+            },
+          },
+        })
+      }
+      showToast();
+
+    }
     setCaptured(true)
   }
 

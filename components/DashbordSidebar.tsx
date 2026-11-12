@@ -73,7 +73,7 @@ const NAV_ITEMS: Record<UserRole, NavItem[]> = {
       href: "/dashbord/recruiter/company",
       icon: Building2,
     },
-    { label: "Manage Jobs", href: "/dashbord/recruiter/jobs", icon: Briefcase },
+    { label: "Manage Jobs", href: "/dashbord/recruiter/all-jobs", icon: Briefcase },
     {
       label: "Applications",
       href: "/dashbord/recruiter/applications",
