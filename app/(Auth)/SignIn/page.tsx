@@ -2,7 +2,7 @@
 
 import { useState } from "react"
 import Link from "next/link"
-import { useRouter } from "next/navigation"
+import { useRouter, useSearchParams } from "next/navigation"
 import {
   AlertCircleIcon,
   ArrowRightIcon,
@@ -27,6 +27,8 @@ const SignInPage = () => {
   const [showPassword, setShowPassword] = useState(false)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const searchParams=useSearchParams();
+  const redirectTo=searchParams.get("redirectTo") ?? '/'
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
@@ -45,7 +47,7 @@ const SignInPage = () => {
         return
       }
 
-      router.push("/")
+      router.push(redirectTo)
       router.refresh()
     } catch {
       setError("Something went wrong. Please check your connection and retry.")

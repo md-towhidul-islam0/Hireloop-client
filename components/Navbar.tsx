@@ -23,7 +23,7 @@ const Navbar = () => {
   const { data: session, isPending } = authClient.useSession()
   console.log(session?.user?.role);
   const navLinks = [
-    { label: "Browse Jobs", href: "/jobs" },
+    { label: "Browse Jobs", href: "/browse-job" },
     { label: "Company", href: "/company" },
     { label: "Pricing", href: "/pricing" },
     { label: "Dashboard", href: `/dashbord/${session?.user?.role}` },

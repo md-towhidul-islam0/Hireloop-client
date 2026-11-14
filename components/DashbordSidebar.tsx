@@ -55,7 +55,7 @@ const NAV_ITEMS: Record<UserRole, NavItem[]> = {
     { label: "Saved Jobs", href: "/dashbord/seeker/saved", icon: Bookmark },
     {
       label: "Applications",
-      href: "/dashbord/seeker/applications",
+      href: "/dashbord/seeker/my-application",
       icon: FileText,
     },
     { label: "Billing", href: "/dashbord/seeker/billing", icon: Wallet },

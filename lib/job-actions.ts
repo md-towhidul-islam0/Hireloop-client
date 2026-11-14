@@ -29,3 +29,54 @@ export async function deleteJob(id: string): Promise<DeleteJobResult> {
     }
   }
 }
+
+export const getjob=async(query="")=>{
+  const res=await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/jobs?${query}`)
+  const data=await res.json();
+  return data;
+}
+export const getjobC=async()=>{
+  const res=await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/jobsforC`)
+  const data=await res.json();
+  return data;
+}
+export const geteachjob=async(id:string)=>{
+  const res=await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/jobsforC/${id}`)
+  const data=await res.json();
+  return data;
+}
+
+export const postApplecation = async (data: {
+  jobID: string;
+  userID: string;
+}) => {
+  const res = await fetch(
+    `${process.env.NEXT_PUBLIC_BACKEND_URL}/appli`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    }
+  );
+
+  if (!res.ok) {
+    throw new Error("Failed to submit application");
+  }
+
+  return res.json();
+};
+
+
+export const getAppli=async(id:string)=>{
+  const res=await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/appli/${id}`)
+  const data=await res.json();
+  return data;
+}
+
+export const checkIsJobhere=async (UserId:string,JobID:string)=>{
+  const res=await getAppli(UserId);
+  console.log("Hello")
+  console.log(res);
+}
