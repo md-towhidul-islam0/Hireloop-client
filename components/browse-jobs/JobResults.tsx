@@ -8,16 +8,22 @@ const PAGE_SIZE = 12
 
 interface JobResultsProps {
   jobs: BrowseJob[]
+  page?: number
 }
 
-export function JobResults({ jobs }: JobResultsProps) {
-  // TODO: read the page from the URL once pagination is wired up.
-  const page = 1
+export function JobResults({ jobs, page = 1 }: JobResultsProps) {
   const pageCount = Math.max(1, Math.ceil(jobs.length / PAGE_SIZE))
-  const visibleJobs = jobs.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE)
+  const currentPage = Math.min(Math.max(1, page), pageCount)
+  const start = (currentPage - 1) * PAGE_SIZE
+  const visibleJobs = jobs.slice(start, start + PAGE_SIZE)
+  const end = start + visibleJobs.length
 
   return (
-    <section aria-labelledby="job-results-heading" className="min-w-0">
+    <section
+      id="job-results"
+      aria-labelledby="job-results-heading"
+      className="min-w-0 scroll-mt-24"
+    >
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h2
@@ -33,7 +39,7 @@ export function JobResults({ jobs }: JobResultsProps) {
               <>
                 Showing{" "}
                 <span className="font-medium text-white">
-                  {visibleJobs.length}
+                  {start + 1}-{end}
                 </span>{" "}
                 of {jobs.length} {jobs.length === 1 ? "job" : "jobs"}
               </>
@@ -54,7 +60,9 @@ export function JobResults({ jobs }: JobResultsProps) {
             ))}
           </div>
 
-          {pageCount > 1 ? <Pagination page={page} pageCount={pageCount} /> : null}
+          {pageCount > 1 ? (
+            <Pagination page={currentPage} pageCount={pageCount} />
+          ) : null}
         </>
       )}
     </section>

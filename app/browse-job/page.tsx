@@ -43,6 +43,10 @@ const BrowseJobsPage = async ({
   const categories = getCategoryOptions(jobsC)
   const jobTypes = getJobTypeOptions(jobsC)
 
+  const rawPage = Array.isArray(search.page) ? search.page[0] : search.page
+  const parsedPage = Number.parseInt(rawPage ?? "", 10)
+  const page = Number.isFinite(parsedPage) && parsedPage > 0 ? parsedPage : 1
+
   return (
     <main className="min-h-screen bg-[#050507] text-white">
       <Navbar />
@@ -55,7 +59,7 @@ const BrowseJobsPage = async ({
             <JobFilters categories={categories} jobTypes={jobTypes} />
           </aside>
 
-          <JobResults jobs={jobs} />
+          <JobResults jobs={jobs} page={page} />
         </div>
       </section>
     </main>

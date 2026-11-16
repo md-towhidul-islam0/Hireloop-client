@@ -72,29 +72,41 @@ export function ApplyJobButton({
     }
 
     setIsSubmitting(true)
+    const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/appli/count?userID=${user.id}`)
+    const dat = await res.json();
 
-    try {
-      const ApplicationInfo = {
-        jobID: jobId,
-        userID: user.id,
-      }
-
-      await postApplecation(ApplicationInfo)
-      markJobApplied(user.id, jobId)
-      toast.add({
-        type: "success",
-        title: "Application submitted",
-        description: `Your application for ${title} was sent successfully.`,
-      })
-    } catch (error) {
-      console.error("Failed to submit application", error)
+    if (dat.count >= 8) {
       toast.add({
         type: "error",
-        title: "Application not submitted",
-        description: "Something went wrong. Please try again in a moment.",
+        title: "Cross your limite",
+        description: "Upgrade you plan",
       })
-    } finally {
-      setIsSubmitting(false)
+      router.push(`/payment?reditectTo=browse-job/${jobId}`)
+    }
+    else {
+      try {
+        const ApplicationInfo = {
+          jobID: jobId,
+          userID: user.id,
+        }
+
+        await postApplecation(ApplicationInfo)
+        markJobApplied(user.id, jobId)
+        toast.add({
+          type: "success",
+          title: "Application submitted",
+          description: `Your application for ${title} was sent successfully.`,
+        })
+      } catch (error) {
+        console.error("Failed to submit application", error)
+        toast.add({
+          type: "error",
+          title: "Application not submitted",
+          description: "Something went wrong. Please try again in a moment.",
+        })
+      } finally {
+        setIsSubmitting(false)
+      }
     }
   }
 
