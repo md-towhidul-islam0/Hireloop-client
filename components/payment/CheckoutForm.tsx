@@ -193,23 +193,27 @@ export function CheckoutForm({
         </p>
       ) : null}
 
-      <button
-        type="submit"
-        disabled={isPending}
-        className="mt-6 flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-indigo-600 text-sm font-semibold text-white transition-all hover:bg-indigo-500 focus-visible:ring-4 focus-visible:ring-indigo-500/30 focus-visible:outline-none active:translate-y-px disabled:pointer-events-none disabled:opacity-60"
-      >
-        {isPending ? (
-          <>
-            <LoaderCircleIcon className="size-4 animate-spin" />
-            Connecting to Stripe…
-          </>
-        ) : (
-          <>
-            <Lock className="size-4" />
-            Pay {formatPrice(plan.unitAmount, plan.currency)}
-          </>
-        )}
-      </button>
+
+      <form action="/api/checkout_sessions" method="POST">
+        <section>
+          <button type="submit" role="link"
+            disabled={isPending}
+            className="mt-6 flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-indigo-600 text-sm font-semibold text-white transition-all hover:bg-indigo-500 focus-visible:ring-4 focus-visible:ring-indigo-500/30 focus-visible:outline-none active:translate-y-px disabled:pointer-events-none disabled:opacity-60">
+            {isPending ? (
+              <>
+                <LoaderCircleIcon className="size-4 animate-spin" />
+                Connecting to Stripe…
+              </>
+            ) : (
+              <>
+                <Lock className="size-4" />
+                Pay {formatPrice(plan.unitAmount, plan.currency)}
+              </>
+            )}
+          </button>
+        </section>
+      </form>
+
 
       <p className="mt-3 text-center text-xs leading-5 text-white/40">
         {isSignedIn

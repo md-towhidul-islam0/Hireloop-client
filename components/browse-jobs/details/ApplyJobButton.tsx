@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState, useSyncExternalStore } from "react"
+import { use, useEffect, useState, useSyncExternalStore } from "react"
 import { useRouter } from "next/navigation"
 import { Send } from "lucide-react"
 
@@ -68,14 +68,20 @@ export function ApplyJobButton({
       isChecking ||
       isSubmitting
     ) {
+      toast.add({
+        type: "Failed",
+        title: "User Is Not a job Seeker",
+        description: `Your application for ${title} was sent successfully.`,
+      })
       return
     }
 
     setIsSubmitting(true)
     const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/appli/count?userID=${user.id}`)
     const dat = await res.json();
-
-    if (dat.count >= 8) {
+    console.log(user.premium)
+    console.log(user)
+    if (user.premium === false && dat.count >= 8) {
       toast.add({
         type: "error",
         title: "Cross your limite",
@@ -88,6 +94,7 @@ export function ApplyJobButton({
         const ApplicationInfo = {
           jobID: jobId,
           userID: user.id,
+          applicationStatus: "Pending"
         }
 
         await postApplecation(ApplicationInfo)
@@ -114,22 +121,24 @@ export function ApplyJobButton({
     expired || hasApplied || isChecking || isSubmitting || isPending
 
   return (
-    <button
-      type="button"
-      onClick={handleApply}
-      disabled={disabled}
-      className="inline-flex h-9 items-center justify-center gap-2 rounded-lg bg-indigo-600 px-4 text-sm font-medium text-white transition-colors hover:bg-indigo-500 focus-visible:ring-3 focus-visible:ring-indigo-400/60 focus-visible:outline-none disabled:pointer-events-none disabled:bg-white/10 disabled:text-white/40"
-    >
-      <Send className="size-4" />
-      {expired
-        ? "Applications closed"
-        : hasApplied
-          ? "Already applied"
-          : isSubmitting
-            ? "Applying..."
-            : isChecking
-              ? "Checking..."
-              : "Apply now"}
-    </button>
+    <div>
+      {user?.role != "seeker" ? "" : <button
+        type="button"
+        onClick={handleApply}
+        disabled={disabled}
+        className="inline-flex h-9 items-center justify-center gap-2 rounded-lg bg-indigo-600 px-4 text-sm font-medium text-white transition-colors hover:bg-indigo-500 focus-visible:ring-3 focus-visible:ring-indigo-400/60 focus-visible:outline-none disabled:pointer-events-none disabled:bg-white/10 disabled:text-white/40"
+      >
+        <Send className="size-4" />
+        {expired
+          ? "Applications closed"
+          : hasApplied
+            ? "Already applied"
+            : isSubmitting
+              ? "Applying..."
+              : isChecking
+                ? "Checking..."
+                : "Apply now"}
+      </button>}
+    </div>
   )
 }

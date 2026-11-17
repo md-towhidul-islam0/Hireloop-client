@@ -20,12 +20,12 @@ const roleValidator = {
             isUserRole(value)
                 ? { value }
                 : {
-                      issues: [
-                          {
-                              message: `Role must be one of: ${USER_ROLES.join(", ")}`,
-                          },
-                      ],
-                  },
+                    issues: [
+                        {
+                            message: `Role must be one of: ${USER_ROLES.join(", ")}`,
+                        },
+                    ],
+                },
     },
 };
 
@@ -48,7 +48,14 @@ export const auth = betterAuth({
                     input: roleValidator,
                 },
             },
+            premium: {
+                type: "boolean",
+                required: false,
+                defaultValue: false,
+                input: false,
+            },
         },
+
     },
     databaseHooks: {
         user: {

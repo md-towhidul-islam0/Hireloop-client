@@ -14,8 +14,9 @@ import {
   Globe2,
   MapPin,
 } from "lucide-react"
-import { Addjob } from "@/lib/dataManu"
+import { Addjob, countAddedJob } from "@/lib/dataManu"
 import { useRouter } from "next/navigation"
+import { authClient } from "@/lib/auth-client"
 
 export interface JobfromType {
 
@@ -31,6 +32,7 @@ export interface JobfromType {
   frequency: FormDataEntryValue | null,
   responsibilities: FormDataEntryValue | null,
   qualifications: FormDataEntryValue | null,
+  email: string | undefined
 
 }
 
@@ -117,7 +119,16 @@ function SectionCard({
 
 export default function AddJobPage() {
   const [captured, setCaptured] = useState(false)
-     const router=useRouter();
+  const router = useRouter();
+  const {
+    data: session,
+    isPending, //loading state
+    error, //error object
+    refetch //refetch the session
+  } = authClient.useSession()
+
+
+
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
@@ -136,38 +147,39 @@ export default function AddJobPage() {
       frequency: formData.get("frequency"),
       responsibilities: formData.get("responsibilities"),
       qualifications: formData.get("qualifications"),
+      email: session?.user.email
     }
-
-    // Backend wiring comes later; capture the payload from the form for now.
+    const totalAdded = await countAddedJob(session?.user.email || "")
+    console.log(totalAdded);
     console.log("New job posting:", job)
+    if (totalAdded > 2 && session?.user.premium == false) {
+      toast.add({
+        type: "error",
+        title: "Cross your limite",
+        description: "Upgrade you plan",
+      })
+      router.push(`/payment?reditectTo=browse-job`)
+    }
+    else {
+      const da = await Addjob(job);
 
-    // const res=await fetch(`http://localhost:5000/jobs`,{
-    //     method:"POST",
-    //     body:JSON.stringify(job),
-    //     headers:{
-    //         'Content-Type':'application/json',
-    //     }
-    // })
-    // console.log(res);
-
-    const da = await Addjob(job);
- 
-    console.log(da);
-    if (da.acknowledged === true) {
-      function showToast() {
-        const id = toast.add({
-          title: "Job Added Successfully",
-          description: "",
-          actionProps: {
-            children: "Manage Job",
-            onClick() {
-              router.push('/dashbord/recruiter/all-jobs')
+      console.log(da);
+      if (da.acknowledged === true) {
+        function showToast() {
+          const id = toast.add({
+            title: "Job Added Successfully",
+            description: "",
+            actionProps: {
+              children: "Manage Job",
+              onClick() {
+                router.push('/dashbord/recruiter/all-jobs')
+              },
             },
-          },
-        })
-      }
-      showToast();
+          })
+        }
+        showToast();
 
+      }
     }
     setCaptured(true)
   }

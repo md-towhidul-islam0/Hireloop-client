@@ -15,6 +15,7 @@ import {
 } from "lucide-react"
 
 import { DeleteJobButton } from "@/components/DeleteJobButton"
+import { GetSessionByserver } from "@/lib/core/apiget"
 
 /* -------------------------------------------------------------------------- */
 /*                                   Types                                    */
@@ -130,8 +131,10 @@ function toJob(job: ApiJob, index: number): Job {
 }
 
 async function getJobs(): Promise<Job[]> {
+  const res=await GetSessionByserver();
+  const user=res?.user;
   try {
-    const res = await fetch(`${process.env.BACKEND_URL}/jobs`, {
+    const res = await fetch(`${process.env.BACKEND_URL}/jobs?email=${user?.email}`, {
       cache: "no-store",
     })
 

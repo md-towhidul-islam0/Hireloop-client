@@ -26,7 +26,13 @@ const PaymentPage = async ({
   searchParams: Promise<SearchParams>
 }) => {
   const search = await searchParams
+  const { canceled } = await searchParams
 
+  if (canceled) {
+    console.log(
+      'Order canceled -- continue to shop around and check out when you\'re ready.'
+    )
+  }
   const plan = getPlan(readParam(search.plan))
   // `reditectTo` is the misspelled param the job details page sends today.
   const redirectTo =
