@@ -2,6 +2,8 @@ import { betterAuth } from "better-auth";
 import { APIError } from "better-auth/api";
 import { MongoClient } from "mongodb";
 import { mongodbAdapter } from "@better-auth/mongo-adapter";
+import { admin } from "better-auth/plugins";
+import { adminAc, userAc } from "better-auth/plugins/admin/access";
 
 import { isUserRole, USER_ROLES } from "@/lib/roles";
 
@@ -30,6 +32,17 @@ const roleValidator = {
 };
 
 export const auth = betterAuth({
+    plugins: [
+        admin({
+            // Register HireLoop's three roles so the admin API accepts them
+            // when an admin changes a user's role from the users page.
+            roles: {
+                admin: adminAc,
+                recruiter: userAc,
+                seeker: userAc,
+            },
+        }),
+    ],
     database: mongodbAdapter(db, {
         client,
     }),
@@ -40,10 +53,20 @@ export const auth = betterAuth({
         additionalFields: {
             role: {
                 type: "string",
-                // The client must send the role on sign-up and it is stored
-                // on the user document in MongoDB.
-                input: true,
+                // The admin plugin owns this field and marks it input:false.
+                // The sign-up form sends `signupRole` instead, and the create
+                // hook below copies it onto `role` before saving.
+                input: false,
                 required: true,
+                validator: {
+                    input: roleValidator,
+                },
+            },
+            signupRole: {
+                type: "string",
+                input: true,
+                required: false,
+                returned: false,
                 validator: {
                     input: roleValidator,
                 },
@@ -57,19 +80,30 @@ export const auth = betterAuth({
         },
 
     },
+
     databaseHooks: {
         user: {
             create: {
                 // Backstop: never persist a user without a valid role,
                 // even if a future code path bypasses the field validator.
                 before: async (user) => {
-                    if (!isUserRole(user.role)) {
+                    const { signupRole, ...rest } = user as typeof user & {
+                        signupRole?: unknown;
+                    };
+                    const role = signupRole ?? user.role;
+
+                    if (!isUserRole(role)) {
                         throw APIError.from("BAD_REQUEST", {
                             code: "MISSING_ROLE",
                             message: `Please choose a role: ${USER_ROLES.join(", ")}`,
                         });
                     }
-                    return { data: user };
+
+                    // `signupRole` is only a transport field — clear it so the
+                    // adapter doesn't persist it (hooks merge, not replace).
+                    return {
+                        data: { ...rest, role, signupRole: undefined },
+                    };
                 },
             },
         },

@@ -25,9 +25,9 @@ export const ROLE_OPTIONS: readonly {
     label: "Recruiter",
     description: "Post jobs & hire great talent",
   },
-  {
-    value: "admin",
-    label: "Admin",
-    description: "Manage & moderate the platform",
-  },
+  // {
+  //   value: "admin",
+  //   label: "Admin",
+  //   description: "Manage & moderate the platform",
+  // },
 ]

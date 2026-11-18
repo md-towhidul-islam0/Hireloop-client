@@ -272,8 +272,8 @@ function JobRow({ job }: { job: Job }) {
             type="button"
             className="inline-flex h-8 items-center gap-1.5 rounded-lg bg-[#5C53FE]/20 px-2 text-xs leading-5 font-medium text-[#C3C0FF] transition-colors hover:bg-[#5C53FE]/30 hover:text-white 2xl:px-2.5"
           >
-            <Pencil className="size-4" />
-            Update
+            {/* <Pencil className="size-4" /> */}
+            <Link href={`/dashbord/recruiter/all-jobs/eachJobview/${job.id}`}>View</Link>
           </button>
           <DeleteJobButton
             id={job.id}
@@ -394,7 +394,7 @@ function JobCard({ job }: { job: Job }) {
           className="inline-flex h-9 flex-1 items-center justify-center gap-1.5 rounded-lg bg-[#5C53FE]/20 px-3 text-xs leading-5 font-medium text-[#C3C0FF] transition-colors hover:bg-[#5C53FE]/30 hover:text-white"
         >
           <Pencil className="size-4" />
-          Update
+          view
         </button>
         <DeleteJobButton
           id={job.id}

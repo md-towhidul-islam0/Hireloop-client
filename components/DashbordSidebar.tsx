@@ -83,7 +83,7 @@ const NAV_ITEMS: Record<UserRole, NavItem[]> = {
   ],
   admin: [
     { label: "Dashboard", href: "/dashbord/admin", icon: LayoutDashboard },
-    { label: "Users", href: "/dashbord/admin/users", icon: Users },
+    { label: "Users", href: "/dashbord/admin/allusers", icon: Users },
     { label: "Companies", href: "/dashbord/admin/companies", icon: Building2 },
     { label: "Jobs", href: "/dashbord/admin/jobs", icon: Briefcase },
     { label: "Payments", href: "/dashbord/admin/payments", icon: Wallet },

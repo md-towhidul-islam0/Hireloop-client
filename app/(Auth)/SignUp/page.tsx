@@ -85,11 +85,11 @@ const SignUpPage = () => {
     setLoading(true)
 
     try {
-      const {data, error: signUpError } = await authClient.signUp.email({
+      const { data, error: signUpError } = await authClient.signUp.email({
         name,
         email,
         password,
-        role,
+        signupRole: role,
       })
 
       if (signUpError) {
